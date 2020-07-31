@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".login">
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/logoImage"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:transitionName="logo_image"
+        android:src="@drawable/note_scan"
+        android:scaleType="fitXY"
+         />
+    <TextView
+        android:id="@+id/logo"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:fontFamily="@font/aladin"
+        android:text="UR Pad"
+        android:gravity="center"
+        android:textColor="#EA9617"
+        android:textSize="40sp"
+        android:transitionName="logo_name"
+        />
+
+    <TextView
+        android:id="@+id/slogan1"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:fontFamily="@font/caesar_dressing"
+        android:paddingTop="5dp"
+        android:text="WHERE YOU SAVE NOTES"
+        android:textAlignment="center"
+        android:textColor="#5569D6"
+        android:textSize="26sp"
+        android:transitionName="logo_slogan" />
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical"
+        android:padding="15dp">
+        <TextView
+            android:id="@+id/signtxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sign in to continue"
+            android:fontFamily="@font/antic"
+            android:textSize="25sp"
+            android:textAlignment="center"
+            android:transitionName="signup_tran"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/code_picker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:ccp_autoDetectCountry="true"
+            app:ccp_showFlag="true"
+            app:ccp_showNameCode="true"
+            android:background="@drawable/black_border"
+            app:ccp_showFullName="true"
+            app:ccp_showArrow="true"
+            app:ccp_flagBorderColor="@color/black"
+            android:backgroundTint="@color/black"
+            />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/login_phone_number"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Phone Number"
+            android:layout_below="@+id/code_picker"
+            android:layout_marginTop="5dp"
+            app:boxStrokeColor="@color/black">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/phoneNo_RM"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="phone"
+                android:textColor="@color/black"
+                android:drawableStart="@drawable/ic_phone"
+                android:drawableTint="@color/black"
+                android:drawablePadding="10dp"
+                android:padding="15dp"
+                android:textSize="25sp"
+                android:textCursorDrawable="@null"
+                android:transitionName="phone_tran"/>
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/regPassword"
+            android:hint="Password"
+            app:passwordToggleEnabled="true"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/login_phone_number"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:boxStrokeColor="@color/black"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password_RM"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:inputType="textPassword"
+                android:drawableStart="@drawable/ic_lock"
+                android:drawableTint="@color/black"
+                android:drawablePadding="10dp"
+                android:padding="15dp"
+                android:transitionName="password_tran"/>
+        </com.google.android.material.textfield.TextInputLayout>
+            <CheckBox
+                android:id="@+id/rember_me"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/regPassword"
+                android:layout_alignParentLeft="true"
+                android:text="Remember Me"
+                android:textSize="15sp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="10dp"
+                android:elevation="10dp"
+                />
+
+            <Button
+                android:id="@+id/forget_btn"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:background="#00000000"
+                android:text="Forget Password"
+                android:elevation="10dp"
+                android:layout_below="@+id/regPassword"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_alignParentRight="true"
+                android:textSize="15sp"
+                />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/white_circle"
+                android:padding="20dp"
+                android:elevation="10dp"
+                android:id="@+id/login_progressBar"
+                android:visibility="gone"
+                >
+                <ProgressBar
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                   />
+            </RelativeLayout>
+
+        </RelativeLayout>
+        <Button
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Log in"
+            android:background="@drawable/custom_button"
+            android:textColor="#fff"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="30sp"
+            android:transitionName="go_tran"
+            />
+
+        <Button
+            android:id="@+id/signup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:background="#00000000"
+            android:elevation="10dp"
+            android:fontFamily="@font/antic"
+            android:text="New User? SIGN UP"
+            android:textColor="#000"
+            android:textSize="26sp"
+            android:transitionName="signbtn_tran"/>
+
+    </LinearLayout>
+
+</ScrollView>
+
+</LinearLayout>

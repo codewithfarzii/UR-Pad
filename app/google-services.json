@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1001430152663",
+    "firebase_url": "https://ur-pad-963f7.firebaseio.com",
+    "project_id": "ur-pad-963f7",
+    "storage_bucket": "ur-pad-963f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1001430152663:android:f1b20184c60aa996440792",
+        "android_client_info": {
+          "package_name": "com.example.urpad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1001430152663-vvvosi5lvove9jhh97f1n8ttaco1ndv6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1maHKsoQeZ3ibFT9jtZshKIAviqaQJ94"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1001430152663-vvvosi5lvove9jhh97f1n8ttaco1ndv6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

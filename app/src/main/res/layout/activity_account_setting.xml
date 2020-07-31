@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".AccountSetting">
+    <LinearLayout
+        android:id="@+id/head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
+        android:layout_marginBottom="30dp"
+        >
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/logoImage"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:transitionName="logo_image"
+            android:src="@drawable/note_scan"
+            android:scaleType="fitXY"
+            />
+        <TextView
+            android:id="@+id/logo"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:fontFamily="@font/aladin"
+            android:text="UR Pad"
+            android:gravity="center"
+            android:textColor="#EA9617"
+            android:textSize="40sp"
+            android:transitionName="logo_name"
+            />
+        <TextView
+            android:id="@+id/slogan1"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:fontFamily="@font/caesar_dressing"
+            android:paddingTop="5dp"
+            android:text="WHERE YOU SAVE NOTES"
+            android:textAlignment="center"
+            android:textColor="#5569D6"
+            android:textSize="26sp"
+            android:transitionName="logo_slogan" />
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp"
+        android:onClick="backhome"
+        android:background="@drawable/ic_cross" />
+    <View
+        android:id="@+id/line1"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="15dp"
+        android:layout_below="@+id/head"
+        android:background="@color/black" />
+
+   <ScrollView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_below="@+id/line1"
+       >
+       <LinearLayout
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:padding="10dp"
+           android:orientation="vertical"
+           android:elevation="20dp"
+         android:layout_gravity="center"
+           android:gravity="center">
+
+           <Button
+               android:id="@+id/changePassword"
+               android:layout_width="wrap_content"
+               android:layout_height="80dp"
+               android:layout_marginTop="15dp"
+               android:background="@drawable/custom_button"
+               android:text="Change Password"
+               android:textAllCaps="false"
+               android:textColor="@color/white"
+               android:textSize="30sp"
+               android:textStyle="bold"
+               android:paddingTop="10dp"
+               android:paddingBottom="10dp"
+               android:paddingLeft="30dp"
+               android:paddingRight="30dp"
+               android:onClick="changePassword"
+               android:transitionName="go_tran" />
+           <Button
+               android:id="@+id/deleteAccount"
+               android:layout_width="match_parent"
+               android:layout_height="80dp"
+               android:layout_marginTop="15dp"
+               android:background="@drawable/custom_button"
+               android:text="Delete Account"
+               android:textSize="30sp"
+               android:textStyle="bold"
+               android:paddingTop="10dp"
+               android:paddingBottom="10dp"
+               android:paddingLeft="30dp"
+               android:paddingRight="30dp"
+               android:textAllCaps="false"
+               android:textColor="@color/white"
+               android:onClick="deleteAccount"
+               android:transitionName="go_tran" />
+           <Button
+               android:layout_width="match_parent"
+               android:layout_height="80dp"
+               android:layout_marginTop="15dp"
+               android:background="@drawable/custom_button"
+               android:text="Clear Cloud Data"
+               android:textSize="30sp"
+               android:textStyle="bold"
+               android:paddingTop="10dp"
+               android:paddingBottom="10dp"
+               android:paddingLeft="30dp"
+               android:paddingRight="30dp"
+               android:textAllCaps="false"
+               android:textColor="@color/white"
+               android:onClick="deleteCloudData"
+               android:transitionName="go_tran" />
+
+
+       </LinearLayout>
+   </ScrollView>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/white_circle"
+        android:padding="20dp"
+        android:elevation="10dp"
+        android:id="@+id/login_progressBar"
+        android:visibility="gone"
+        >
+        <ProgressBar
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            />
+    </RelativeLayout>
+
+</RelativeLayout>

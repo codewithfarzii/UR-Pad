@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">UR Pad</string>
+    <string-array name="font_family">
+        <item>sans-serif</item>
+        <item>sans-serif-thin</item>
+        <item>sans-serif-light</item>
+        <item>sans-serif-medium</item>
+        <item>sans-serif-black</item>
+        <item>sans-serif-condensed</item>
+        <item>sans-serif-condensed-light</item>
+        <item>sans-serif-condensed-medium</item>
+        <item>serif</item>
+        <item>monospace</item>
+        <item>serif-monospace</item>
+        <item>casual</item>
+        <item>cursive</item>
+        <item>sans-serif-smallcaps</item>
+    </string-array>
+
+    <string name="title_activity_main3">MainActivity3</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="title_activity_main4">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <string name="otp_description_text">Enter OTP Sent on +988556668921</string>
+
+    <string name="forget_password_detail">Provide your phone number you gave while creating your account to reset your password</string>
+    <string name="ocr_details">
+        Description\nDetetc text from any image using Text Recognition Technology and save it as a note!
+    </string>
+    <string name="noteBook_details">
+       Now Create/Update/Delete your notes. Now you can have your unlimted notes with advance features!
+</string>
+    <string name="about_details">
+        Description\nKnow about this application and its feature how to use them in efficient way!
+</string>
+    <string name="card1">
+        Card 1
+    </string>
+    <string name="card2">Notes</string>
+    <string name="card3">Profile</string>
+    <string name="card4">Setting</string>
+    <string name="NoText">
+         ***Detected***\n
+        No Text Found in Image!
+    </string>
+
+    <string name="TextFound">
+         ***Detected***\n
+       Press Button Below!
+    </string>
+
+    <string name="NoImage">
+        ***Detected***\n
+       Please Capture an Image First!
+    </string>
+
+</resources>

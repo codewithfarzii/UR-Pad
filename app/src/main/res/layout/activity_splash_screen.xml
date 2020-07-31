@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".splashScreen">
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/gifnote"
+            android:layout_width="wrap_content"
+            android:layout_height="380dp"
+            android:background="@drawable/note_scan"
+            app:layout_constraintStart_toStartOf="parent"
+            android:transitionName="logo_image"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/logo"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/aladin"
+            android:gravity="center"
+            android:text="UR Pad"
+            android:transitionName="logo_name"
+            android:textAlignment="center"
+            android:textColor="@color/logo_color"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/slogan1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/caesar_dressing"
+            android:gravity="center"
+            android:text="WHERE YOU SAVE NOTES"
+            android:textAlignment="center"
+            android:textColor="#5569D6"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:transitionName="logo_slogan" />
+
+        <TextView
+            android:id="@+id/slogan2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/aclonica"
+            android:gravity="center"
+            android:text="WE SAVE YOUR TIME"
+            android:textAlignment="center"
+            android:textColor="#D52B4CF3"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:transitionName="signup_tran"/>
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

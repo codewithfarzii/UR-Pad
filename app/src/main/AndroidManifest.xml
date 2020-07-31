@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.urpad">
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/scaning"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme.NoActionBar">
+
+        <activity android:name=".AccountSetting"></activity>
+        <activity android:name=".Search" />
+        <activity android:name=".UserProfile" />
+        <activity android:name=".OCR" />
+        <activity android:name=".AddNote" />
+        <activity android:name=".signUpSetupMessage" />
+        <activity
+            android:name=".DisplayNotes"
+            android:parentActivityName=".Home_Dash" />
+        <activity android:name=".Home_Dash">
+
+        </activity>
+        <activity android:name=".PasswordUpdateMessage" />
+        <activity android:name=".setNewPassword" />
+        <activity android:name=".ForgetPassword" />
+        <activity android:name=".verifyOTP" />
+        <activity android:name=".signUp3" />
+        <activity android:name=".signUp2" />
+        <activity android:name=".signUp" />
+        <activity android:name=".login" />
+        <activity android:name=".splashScreen" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="ocr" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+    </application>
+
+</manifest>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".Search">
+    <LinearLayout
+       android:id="@+id/head"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_alignParentTop="true"
+       android:orientation="vertical"
+       >
+       <pl.droidsonroids.gif.GifImageView
+           android:id="@+id/logoImage"
+           android:layout_width="match_parent"
+           android:layout_height="100dp"
+           android:transitionName="logo_image"
+           android:src="@drawable/note_scan"
+           android:scaleType="fitXY"
+           />
+       <TextView
+           android:id="@+id/logo"
+           android:layout_width="match_parent"
+           android:layout_height="50dp"
+           android:fontFamily="@font/aladin"
+           android:text="UR Pad"
+           android:gravity="center"
+           android:textColor="#EA9617"
+           android:textSize="40sp"
+           android:transitionName="logo_name"
+           />
+       <TextView
+           android:id="@+id/slogan1"
+           android:layout_width="match_parent"
+           android:layout_height="40dp"
+           android:fontFamily="@font/caesar_dressing"
+           android:paddingTop="5dp"
+           android:text="WHERE YOU SAVE NOTES"
+           android:textAlignment="center"
+           android:textColor="#5569D6"
+           android:textSize="26sp"
+           android:transitionName="logo_slogan" />
+   </LinearLayout>
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp"
+        android:onClick="backhome"
+        android:background="@drawable/ic_cross" />
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/head"
+        android:layout_margin="10dp"
+        android:padding="5dp"
+        app:searchHintIcon="@drawable/ic_person"
+        app:queryHint="Search Here.."
+        android:autofillHints="Note"
+        app:iconifiedByDefault="false"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recylerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/searchNote"
+        android:background="@android:color/white"
+        android:scrollbars="vertical" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/white_circle"
+        android:padding="20dp"
+        android:elevation="10dp"
+        android:id="@+id/login_progressBar"
+        android:visibility="gone"
+        >
+        <ProgressBar
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            />
+    </RelativeLayout>
+</RelativeLayout>
