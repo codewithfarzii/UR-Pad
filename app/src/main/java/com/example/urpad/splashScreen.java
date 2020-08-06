@@ -37,7 +37,7 @@ public class splashScreen extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent i=new Intent(splashScreen.this,login.class);
+                Intent i=new Intent(splashScreen.this,StartUp.class);
 
                 Pair[] pairs=new Pair[4];
                 pairs[0]=new Pair<View,String>(img,"logo_image");

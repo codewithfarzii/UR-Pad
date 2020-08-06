@@ -8,11 +8,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -26,12 +28,13 @@ import java.util.List;
 
 public class AccountSetting extends AppCompatActivity {
 
-    String _phoneNo;
+    String userID;
     RelativeLayout progressbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_account_setting);
         progressbar=findViewById(R.id.login_progressBar);
     }
@@ -52,7 +55,7 @@ public class AccountSetting extends AppCompatActivity {
     }
 
     public void changePassword(View view) {
-        Intent i = new Intent(this, ForgetPassword.class);
+        Intent i = new Intent(this, setNewPassword.class);
         i.putExtra("setting", "yes");
         startActivity(i);
         finish();
@@ -66,7 +69,6 @@ public class AccountSetting extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         progressbar.setVisibility(View.VISIBLE);
-                        getFromSession();
                         deleteAccount();
                     }
                 })
@@ -82,7 +84,6 @@ public class AccountSetting extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         progressbar.setVisibility(View.VISIBLE);
-                        getFromSession();
                         deleteData();
                     }
                 })
@@ -90,9 +91,10 @@ public class AccountSetting extends AppCompatActivity {
     }
 
     private void deleteData() {
+        userID= FirebaseAuth.getInstance().getCurrentUser().getUid().toString();
         FirebaseFirestore.getInstance()
                 .collection("notes")
-                .whereEqualTo("userid", _phoneNo)
+                .whereEqualTo("userid", userID)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -121,7 +123,8 @@ public class AccountSetting extends AppCompatActivity {
     }
 
     private void deleteAccount() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(_phoneNo);
+        userID= FirebaseAuth.getInstance().getCurrentUser().getUid().toString();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(userID);
         reference.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -140,17 +143,12 @@ public class AccountSetting extends AppCompatActivity {
 
     }
 
-    private void getFromSession() {
-        SessionManager sessionManager = new SessionManager(AccountSetting.this, SessionManager.SESSION_USERSESSION);
-        HashMap<String, String> userDetails = sessionManager.getUserDetailFromSession();
-        _phoneNo = userDetails.get(SessionManager.KEY_PHONENUMBER);
-    }
 
     public void LogOut() {
         progressbar.setVisibility(View.GONE);
-        SessionManager sessionManager = new SessionManager(AccountSetting.this, SessionManager.SESSION_USERSESSION);
-        sessionManager.logoutUserFromSession();
-       Intent i = new Intent(AccountSetting.this, login.class);
+        SessionManager sessionManager = new SessionManager(AccountSetting.this, SessionManager.SESSION_REMEMBERME);
+        sessionManager.clearUser();
+       Intent i = new Intent(AccountSetting.this,   StartUp.class);
         startActivity(i);
         finish();
     }

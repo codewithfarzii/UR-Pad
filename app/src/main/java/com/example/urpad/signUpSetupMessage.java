@@ -25,7 +25,7 @@ public class signUpSetupMessage extends AppCompatActivity {
     }
 
     private void loginActivity() {
-        Toast.makeText(this,"Now Login to Your account",Toast.LENGTH_LONG).show();
+       // Toast.makeText(this,"Now Login to Your account",Toast.LENGTH_LONG).show();
         Intent i = new Intent(signUpSetupMessage.this, login.class);
         startActivity(i);
         finish();

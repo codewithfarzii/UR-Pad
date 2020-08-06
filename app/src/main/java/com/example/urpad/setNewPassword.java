@@ -1,5 +1,6 @@
 package com.example.urpad;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ActivityOptions;
@@ -14,7 +15,11 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -52,21 +57,23 @@ public class setNewPassword extends AppCompatActivity {
             progressbar.setVisibility(View.GONE);
             return;
         }
-        String phoneNo = getIntent().getStringExtra("phoneNo");
-        Log.d("check","no->"+phoneNo);
+        FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
         String _newPassword=newPassword.getEditText().getText().toString();
-
-        Log.d("check","newpas->"+_newPassword);
-        //Update database
-        DatabaseReference reference= FirebaseDatabase.getInstance().getReference("users");
-        reference.child(phoneNo).child("password").setValue(_newPassword);
-
-        Log.d("check","updated");
-        Intent i = new Intent(this, PasswordUpdateMessage.class);
-        Log.d("check","start intent");
-        startActivity(i);
-        progressbar.setVisibility(View.GONE);
-        finish();
+        user.updatePassword(_newPassword).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Intent i = new Intent(setNewPassword.this, PasswordUpdateMessage.class);
+                Log.d("check","start intent");
+                startActivity(i);
+                progressbar.setVisibility(View.GONE);
+                finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                   Toast.makeText(setNewPassword.this,"Try Again Later!",Toast.LENGTH_SHORT).show();
+                    }
+                });
 
     }
     private Boolean validatePassword1() {
@@ -152,7 +159,7 @@ public class setNewPassword extends AppCompatActivity {
 
     private void loginActivity() {
        // Toast.makeText(this,"Home",Toast.LENGTH_LONG).show();
-        Intent i = new Intent(this, login.class);
+        Intent i = new Intent(this, AccountSetting.class);
         startActivity(i);
         progressbar.setVisibility(View.GONE);
         finish();

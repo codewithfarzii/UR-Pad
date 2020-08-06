@@ -16,6 +16,7 @@ import android.media.ImageReader;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
@@ -25,6 +26,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -36,8 +38,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -52,62 +59,53 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserProfile extends AppCompatActivity {
 
-    TextInputLayout regName, regUserName, regEmail;
-    TextInputEditText SetfName, SetuName, Setemail;
-    ImageView back;
+    ImageView back, icon;
     CircleImageView profileImage;
-    Button update;
-    RadioGroup radioGroup;
-    TextView phoneNO, fullNameField, userNameField;
-    RadioButton selectedGender, male, female, other;
+    Button set;
+    TextView auth, fullNameField, userNameField, genderField, dobField, topFullName, topUserame;
     RelativeLayout progressbar;
-    String _password, _dateOfBirth;
     URI downloadURI;
     Uri ImageUri;
     int TAKE_IMAGE_CODE = 10002;
-    private static final int IMAGE_PICK_CODE=1000;
-    private static final int PERMISSION_CODE=1001;
-    boolean gallery=false;
+    private static final int IMAGE_PICK_CODE = 1000;
+    private static final int PERMISSION_CODE = 1001;
+    boolean gallery = false;
+    SessionManager sessionManager;
+    String userID,authID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_user_profile);
-
+        Log.d("check","Started");
         //Hooks
         back = findViewById(R.id.back);
-        phoneNO = findViewById(R.id.phoneNo_label);
-        update = findViewById(R.id.reg_btn);
-        regName = findViewById(R.id.regName);
-        regUserName = findViewById(R.id.regUserName);
-        regEmail = findViewById(R.id.regEmail);
-        radioGroup = findViewById(R.id.radio_group);
-        SetfName = findViewById(R.id.SetfName);
-        SetuName = findViewById(R.id.SetuName);
-        Setemail = findViewById(R.id.Setemail);
-        male = findViewById(R.id.male);
-        female = findViewById(R.id.female);
-        other = findViewById(R.id.other);
-        fullNameField = findViewById(R.id.fullname_field);
-        userNameField = findViewById(R.id.username_field);
+        icon = findViewById(R.id.Imageicon);
+        fullNameField = findViewById(R.id.name);
+        userNameField = findViewById(R.id.userName);
+        genderField = findViewById(R.id.gender);
+        dobField = findViewById(R.id.dob);
+        topFullName = findViewById(R.id.fullname_field);
+        topUserame = findViewById(R.id.username_field);
         progressbar = findViewById(R.id.login_progressBar);
         profileImage = findViewById(R.id.profile_image);
-
-
-        final PopupMenu popupMenu=new PopupMenu(
+        set = findViewById(R.id.reg_btn);
+        auth = findViewById(R.id.phoneNo_label);
+        Log.d("check","hooks done");
+        final PopupMenu popupMenu = new PopupMenu(
                 this,
                 profileImage
         );
-        popupMenu.getMenuInflater().inflate(R.menu.select_image_menu,popupMenu.getMenu());
+        popupMenu.getMenuInflater().inflate(R.menu.select_image_menu, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                int id=item.getItemId();
-                if(id==R.id.nav_takeImage){
-                      setProfileImage();
+                int id = item.getItemId();
+                if (id == R.id.nav_takeImage) {
+                    setProfileImage();
                 }
-                if(id==R.id.nav_gallerImage){
+                if (id == R.id.nav_gallerImage) {
                     getPermission();
                 }
 
@@ -115,7 +113,8 @@ public class UserProfile extends AppCompatActivity {
             }
         });
         // set data
-        getFromSession();
+        setValues();
+        getFromDatabase();
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,22 +127,21 @@ public class UserProfile extends AppCompatActivity {
                 gotoMain();
             }
         });
-        update.setOnClickListener(new View.OnClickListener() {
+        set.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setDataOnProfile();
+                Intent i = new Intent(UserProfile.this, signUp.class);
+                startActivity(i);
+                finish();
             }
         });
     }
-
-
-
     private void LoadImage() {
-
+        progressbar.setVisibility(View.VISIBLE);
         FirebaseStorage storage = FirebaseStorage.getInstance();
         final StorageReference Imageference = storage.getReference()
                 .child("profileImages")
-                .child(phoneNO.getText().toString() + ".jpeg");
+                .child(userID + ".jpeg");
         Imageference.getBytes(1024 * 1024)
                 .addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
@@ -159,6 +157,7 @@ public class UserProfile extends AppCompatActivity {
                 Log.d("check", "uri-->" + uri);
             }
         });
+        progressbar.setVisibility(View.GONE);
 
 //        Glide.with(this)
 //                .load()
@@ -167,48 +166,47 @@ public class UserProfile extends AppCompatActivity {
     }
 
     private void getPermission() {
-       if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
-           if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_DENIED){
-               //permission not granted
-               String[] permissions={Manifest.permission.READ_EXTERNAL_STORAGE};
-               //Pop up fro run time permission
-               requestPermissions(permissions,PERMISSION_CODE);
-           }else
-           {
-               // Permmission granted
-               getImageFromGallery();
-           }
-       }
-       else{
-           // System os is less marshwellow
-           getImageFromGallery();
-       }
-    }
-    private void getImageFromGallery(){
-        Intent intent = new Intent(Intent.ACTION_PICK);
-       intent.setType("image/*");
-       gallery=true;
-            startActivityForResult(intent, IMAGE_PICK_CODE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                //permission not granted
+                String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
+                //Pop up fro run time permission
+                requestPermissions(permissions, PERMISSION_CODE);
+            } else {
+                // Permmission granted
+                getImageFromGallery();
+            }
+        } else {
+            // System os is less marshwellow
+            getImageFromGallery();
         }
+    }
+
+    private void getImageFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        gallery = true;
+        startActivityForResult(intent, IMAGE_PICK_CODE);
+    }
+
     private void setProfileImage() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(getPackageManager()) != null) {
-            gallery=false;
+            gallery = false;
             startActivityForResult(intent, TAKE_IMAGE_CODE);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
-            case PERMISSION_CODE:
-            {
-                if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+        switch (requestCode) {
+            case PERMISSION_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permsion was grated
                     getImageFromGallery();
-                }else{
+                } else {
                     // permission was denied
-                    Toast.makeText(this,"Permission Denied..!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Permission Denied..!", Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -227,29 +225,30 @@ public class UserProfile extends AppCompatActivity {
                     handleUpload(bitmap);
             }
         }
-        if(resultCode==RESULT_OK && requestCode==IMAGE_PICK_CODE){
-           ImageUri=data.getData();
-           try{
-            Bitmap bitmap = (Bitmap) MediaStore.Images.Media.getBitmap(getContentResolver(),ImageUri);
-            profileImage.setImageBitmap(bitmap);
-            handleUpload(bitmap);
-        }catch (IOException e){
-               Log.d("check","Error->",e.getCause());
-           }
+        if (resultCode == RESULT_OK && requestCode == IMAGE_PICK_CODE) {
+            ImageUri = data.getData();
+            try {
+                Bitmap bitmap = (Bitmap) MediaStore.Images.Media.getBitmap(getContentResolver(), ImageUri);
+                profileImage.setImageBitmap(bitmap);
+                handleUpload(bitmap);
+            } catch (IOException e) {
+                Log.d("check", "Error->", e.getCause());
+            }
         }
     }
 
     private void handleUpload(Bitmap bitmap) {
+        progressbar.setVisibility(View.VISIBLE);
         Log.d("check", "handleUpload called");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        if(gallery) {
+        if (gallery) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-        }else{
+        } else {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         }
         StorageReference reference = FirebaseStorage.getInstance().getReference()
                 .child("profileImages")
-                .child(phoneNO.getText().toString() + ".jpeg");
+                .child(userID + ".jpeg");
         Log.d("check", "Query Build");
         reference.putBytes(baos.toByteArray())
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -265,71 +264,38 @@ public class UserProfile extends AppCompatActivity {
                         Log.e("check", "Failure", e.getCause());
                     }
                 });
-    }
-
-    private void setDataOnProfile() {
-        progressbar.setVisibility(View.VISIBLE);
-        CheckInternet checkInternet = new CheckInternet();
-        if (!checkInternet.isConnected(UserProfile.this)) {
-            showCustomDialog();
-            progressbar.setVisibility(View.GONE);
-            Toast.makeText(UserProfile.this, "Please Connect to Internet", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!validateName() | !validateUserName() | !validateEmail()) {
-            progressbar.setVisibility(View.GONE);
-            return;
-        }
-        String _fullName = regName.getEditText().getText().toString().trim();
-        String _username = regUserName.getEditText().getText().toString().trim();
-        String _email = regEmail.getEditText().getText().toString().trim();
-        int id1 = radioGroup.getCheckedRadioButtonId();
-        selectedGender = findViewById(id1);
-        String _gender = selectedGender.getText().toString();
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
-        reference.child(phoneNO.getText().toString()).child("fullName").setValue(_fullName);
-        reference.child(phoneNO.getText().toString()).child("username").setValue(_username);
-        reference.child(phoneNO.getText().toString()).child("email").setValue(_email);
-        reference.child(phoneNO.getText().toString()).child("gender").setValue(_gender);
-
-        fullNameField.setText(_fullName);
-        userNameField.setText(_username);
-        //Create Session
-        SessionManager sessionManager = new SessionManager(UserProfile.this, SessionManager.SESSION_USERSESSION);
-        sessionManager.createLoginSession(_fullName, _username, _email, phoneNO.getText().toString(), _password, _dateOfBirth, _gender);
-        Toast.makeText(UserProfile.this, "Updated", Toast.LENGTH_SHORT).show();
         progressbar.setVisibility(View.GONE);
     }
 
-    private void getFromSession() {
+    private void getFromDatabase() {
+        Log.d("checl","start getttig Firebase data");
         progressbar.setVisibility(View.VISIBLE);
-        // Data From Session Manager
-        SessionManager sessionManager = new SessionManager(UserProfile.this, "userLoginSession");
-        HashMap<String, String> userDetails = sessionManager.getUserDetailFromSession();
-        String _fullName = userDetails.get(SessionManager.KEY_FULLNAME);
-        String _userName = userDetails.get(SessionManager.KEY_USERNAME);
-        String _email = userDetails.get(SessionManager.KEY_EMAIL);
-        String _phoneNo = userDetails.get(SessionManager.KEY_PHONENUMBER);
-        _password = userDetails.get(SessionManager.KEY_SESSIONPASSWORD);
-        String _gender = userDetails.get(SessionManager.KEY_GENDER);
-        _dateOfBirth = userDetails.get(SessionManager.KEY_DATE);
-        SetfName.setText(_fullName);
-        SetuName.setText(_userName);
-        Setemail.setText(_email);
-        phoneNO.setText(_phoneNo);
-        userNameField.setText(_userName);
-        fullNameField.setText(_fullName);
-        if (_gender.matches("Male")) {
-            male.setChecked(true);
-        }
-        if (_gender.matches("Female")) {
-            female.setChecked(true);
-        }
-        if (_gender.matches("Other")) {
-            other.setChecked(true);
-        }
-        LoadImage();
+        // check from DataBase
+        DatabaseReference  ref= FirebaseDatabase.getInstance().getReference("users").child(userID);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //fetch all data
+                String _fullname = snapshot.child("fullName").getValue(String.class);
+                String _username = snapshot.child("userName").getValue(String.class);
+                String _dateOfBirth = snapshot.child("dob").getValue(String.class);
+                String _gender = snapshot.child("gender").getValue(String.class);
+
+                fullNameField.setText(_fullname);
+                topFullName.setText(_fullname);
+                userNameField.setText(_username);
+                topUserame.setText(_username);
+                genderField.setText(_gender);
+                dobField.setText(_dateOfBirth);
+                auth.setText(authID);
+                Log.d("checl","got Firebase data");
+                LoadImage();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
     public void onBackPressed() {
@@ -343,69 +309,23 @@ public class UserProfile extends AppCompatActivity {
         finish();
     }
 
-    private void showCustomDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(UserProfile.this);
-        builder.setMessage("Please Connet to the Internet for Updation!")
-                .setCancelable(true)
-                .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                }).show();
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        progressbar.setVisibility(View.VISIBLE);
+        setValues();
     }
-
-    private Boolean validateName() {
-        String val = regName.getEditText().getText().toString();
-        if (val.isEmpty()) {
-            regName.setError("Field can't be empty");
-            return false;
-        } else {
-            regName.setError(null);
-            regName.setErrorEnabled(false);
-            return true;
+    public void setValues(){
+        userID = FirebaseAuth.getInstance().getCurrentUser().getUid().toString();
+        String authEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        String authPhoneNo = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+        if(authEmail.length()>2){
+            authID=authEmail;
+            icon.setImageDrawable(getDrawable(R.drawable.ic_email));
         }
-    }
-
-    private Boolean validateUserName() {
-        String val = regUserName.getEditText().getText().toString();
-        String noWhiteSpace = "\\A\\w{4,20}\\z";
-        if (val.isEmpty()) {
-            regUserName.setError("Field can't be empty");
-            return false;
-        } else if (val.length() >= 15) {
-            regUserName.setError("Username is too long!");
-            return false;
-        } else if (!val.matches(noWhiteSpace)) {
-            regUserName.setError("White Spaces are not allowed");
-            return false;
-        } else {
-            regUserName.setError(null);
-            regUserName.setErrorEnabled(false);
-            return true;
-        }
-    }
-
-    private Boolean validateEmail() {
-        String val = regEmail.getEditText().getText().toString();
-        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-        if (val.isEmpty()) {
-            regEmail.setError("Field can't be empty");
-            return false;
-        } else if (!val.matches(emailPattern)) {
-            regEmail.setError("Invalid email address");
-            return false;
-        } else {
-            regName.setError(null);
-            regEmail.setErrorEnabled(false);
-            return true;
+        if(authPhoneNo.length()>2){
+            authID=authPhoneNo;
+            icon.setImageDrawable(getDrawable(R.drawable.ic_phone));
         }
     }
 }

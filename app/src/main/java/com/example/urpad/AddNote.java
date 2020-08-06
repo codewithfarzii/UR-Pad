@@ -28,6 +28,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -59,12 +62,15 @@ public class AddNote extends AppCompatActivity {
     int textDefaultColor;
     Note note;
     boolean letupdate = false;
+    private InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_add_note);
+
+        prepareAD();
 
         //ID's
         nTitle = findViewById(R.id.nTitle);
@@ -93,6 +99,7 @@ public class AddNote extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("New Note");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         //Initializing
         font_family = (Spinner) findViewById(R.id.fontfamily);
         minus = findViewById(R.id.minus);
@@ -115,6 +122,7 @@ public class AddNote extends AppCompatActivity {
                 Typeface t = Typeface.create(selected_font, Typeface.NORMAL);
                 nContent.setTypeface(t);
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -261,7 +269,7 @@ public class AddNote extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        gotMain();
+        setAD();
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -283,7 +291,7 @@ public class AddNote extends AppCompatActivity {
             }
 
         } else {
-            gotMain();
+            setAD();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -301,7 +309,7 @@ public class AddNote extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(AddNote.this, "Updated Successfully!", Toast.LENGTH_SHORT).show();
-                        gotMain();
+                        setAD();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -314,11 +322,11 @@ public class AddNote extends AppCompatActivity {
     }
 
     private void addnNote() {
-        SessionManager sessionManager = new SessionManager(AddNote.this, "userLoginSession");
-        HashMap<String, String> userDetails = sessionManager.getUserDetailFromSession();
-        String _phoneNo = userDetails.get(SessionManager.KEY_PHONENUMBER);
+//        SessionManager sessionManager = new SessionManager(AddNote.this, "userLoginSession");
+//        HashMap<String, String> userDetails = sessionManager.getUserDetailFromSession();
+//        String _phoneNo = userDetails.get(SessionManager.KEY_PHONENUMBER);
         Log.d("check", "add func");
-        String userID = _phoneNo;
+        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid().toString();
         Log.d("check", userID);
         Note note = new Note(nTitle.getText().toString(), nContent.getText().toString(), false, currentDate, currentTime, userID, nTitle.getText().toString().toLowerCase());
         Log.d("check", "note");
@@ -329,8 +337,7 @@ public class AddNote extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Toast.makeText(AddNote.this, "Note Saved Successfully", Toast.LENGTH_LONG).show();
-                        gotMain();
-
+                        setAD();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -343,4 +350,25 @@ public class AddNote extends AppCompatActivity {
 
     }
 
+    public void prepareAD() {
+        // interstitial ad
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-1494531846382800/5829708968");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+    }
+
+    public void setAD() {
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+            mInterstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdClosed() {
+                    super.onAdClosed();
+                    gotMain();
+                }
+            });
+        } else
+            gotMain();
+    }
 }

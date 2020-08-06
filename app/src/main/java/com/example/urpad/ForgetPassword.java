@@ -18,6 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -27,32 +29,26 @@ import com.hbb20.CountryCodePicker;
 
 public class ForgetPassword extends AppCompatActivity {
 
-    TextInputLayout phoneNumber;
-    CountryCodePicker countryCodePicker;
+    TextInputLayout currentPassword;
     RelativeLayout progressbar;
-    Button verify;
-    boolean fromSetting = false;
+    Button next;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forget_password);
 
-        if (getIntent().hasExtra("setting")) {
-            fromSetting = true;
-        }
-        phoneNumber = findViewById(R.id.forget_password_phone_number);
-        countryCodePicker = findViewById(R.id.country_code_picker);
+        currentPassword = findViewById(R.id.currentPassword);
         progressbar = findViewById(R.id.login_progressBar);
-        verify = findViewById(R.id.forget_password_next_btn);
+        next = findViewById(R.id.next_btn);
 
-        verify.setOnClickListener(new View.OnClickListener() {
+       /* next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("check", "next click from forget password");
-                if (!validatePhoneNumber()) {
-                    return;
-                }
+//                if (!validatePhoneNumber()) {
+//                    return;
+//                }
                 progressbar.setVisibility(View.VISIBLE);
                 CheckInternet checkInternet = new CheckInternet();
                 if (!checkInternet.isConnected(ForgetPassword.this)) {
@@ -64,15 +60,15 @@ public class ForgetPassword extends AppCompatActivity {
 
                 Log.d("check", "get data start ");
                 //Remove first zero if entered!
-                String _getUserEnteredPhoneNumber = phoneNumber.getEditText().getText().toString();
-                Log.d("check", "phone-> " + _getUserEnteredPhoneNumber);
-                //Remove first zero if entered!
-                if (_getUserEnteredPhoneNumber.charAt(0) == '0') {
-                    _getUserEnteredPhoneNumber = _getUserEnteredPhoneNumber.substring(1);
-                }
-                //Complete phone number
-                final String _phoneNo = "+" + countryCodePicker.getFullNumber() + _getUserEnteredPhoneNumber;
-                Log.d("check", "phoneno-> " + _phoneNo);
+//                String _getUserEnteredPhoneNumber = phoneNumber.getEditText().getText().toString();
+//                Log.d("check", "phone-> " + _getUserEnteredPhoneNumber);
+//                //Remove first zero if entered!
+//                if (_getUserEnteredPhoneNumber.charAt(0) == '0') {
+//                    _getUserEnteredPhoneNumber = _getUserEnteredPhoneNumber.substring(1);
+//                }
+//                //Complete phone number
+//                final String _phoneNo = "+" + countryCodePicker.getFullNumber() + _getUserEnteredPhoneNumber;
+//                Log.d("check", "phoneno-> " + _phoneNo);
                 //DataBase
                 Query checkUser = FirebaseDatabase.getInstance().getReference("users").orderByChild("phoneNo").equalTo(_phoneNo);
                 Log.d("check", "quer run");
@@ -101,24 +97,18 @@ public class ForgetPassword extends AppCompatActivity {
                     }
                 });
             }
-        });
+        });*/
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (fromSetting) {
-            callAccountSetting();
-        }
-        callLogin();
+      callAccountSetting();
     }
 
     public void callBackScreenFromForgetPassword(View view) {
         // Toast.makeText(this,"Home",Toast.LENGTH_LONG).show();
-        if (fromSetting) {
             callAccountSetting();
-        }
-        callLogin();
     }
 
     private void callLogin() {
@@ -133,17 +123,15 @@ public class ForgetPassword extends AppCompatActivity {
         finish();
     }
 
-    private Boolean validatePhoneNumber() {
-        String val = phoneNumber.getEditText().getText().toString();
+    private Boolean validateCurrentPassword() {
+        String val = currentPassword.getEditText().getText().toString();
         if (val.isEmpty()) {
-            phoneNumber.setError("Field can't be empty");
-            return false;
-        } else if (val.length() < 10 || val.length() > 15) {
-            phoneNumber.setError("Invalid No of digits");
+            currentPassword.setError("Field can't be empty");
             return false;
         } else {
-            phoneNumber.setError(null);
-            phoneNumber.setErrorEnabled(false);
+            currentPassword.setError("Incorrect password");
+            currentPassword.setError(null);
+            currentPassword.setErrorEnabled(false);
             return true;
         }
     }

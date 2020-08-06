@@ -27,15 +27,15 @@
 
     <string name="otp_description_text">Enter OTP Sent on +988556668921</string>
 
-    <string name="forget_password_detail">Provide your phone number you gave while creating your account to reset your password</string>
+    <string name="forget_password_detail">Enter current password for setting new password</string>
     <string name="ocr_details">
-        Description\nDetetc text from any image using Text Recognition Technology and save it as a note!
+        Detetc text from any image using Text Recognition Technology and save it as a note!
     </string>
     <string name="noteBook_details">
-       Now Create/Update/Delete your notes. Now you can have your unlimted notes with advance features!
+       Store your unlimted number of notes with advance features!
 </string>
     <string name="about_details">
-        Description\nKnow about this application and its feature how to use them in efficient way!
+        Know about this application and its feature how to use them in efficient way!
 </string>
     <string name="card1">
         Card 1
@@ -57,5 +57,11 @@
         ***Detected***\n
        Please Capture an Image First!
     </string>
+    <string name="appID">
+ca-app-pub-1494531846382800~5982462648
+</string>
+    <string name="home_banner">
+ca-app-pub-1494531846382800/3321582235
+</string>
 
 </resources>

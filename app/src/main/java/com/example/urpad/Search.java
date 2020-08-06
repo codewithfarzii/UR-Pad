@@ -104,13 +104,11 @@ public class Search extends AppCompatActivity implements NotesRecyclerAdapter.No
 
        private void initRecyclerView(String search) {
            Log.d("check", "recy Called");
-           SessionManager sessionManager = new SessionManager(Search.this, "userLoginSession");
-           HashMap<String, String> userDetails = sessionManager.getUserDetailFromSession();
-           String _phoneNo = userDetails.get(SessionManager.KEY_PHONENUMBER);
-           Log.d("check", "np->" + _phoneNo);
+           String userID= FirebaseAuth.getInstance().getCurrentUser().getUid().toString();
+           Log.d("check", "np->" + userID);
            Query query = FirebaseFirestore.getInstance()
                    .collection("notes")
-                   .whereEqualTo("userid", _phoneNo)
+                   .whereEqualTo("userid", userID)
                   .whereEqualTo("search",search)
                    .orderBy("isCompleted", Query.Direction.ASCENDING)
                    .orderBy("date", Query.Direction.DESCENDING)

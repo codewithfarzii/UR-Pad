@@ -23,6 +23,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
@@ -48,6 +51,7 @@ public class OCR extends AppCompatActivity {
     String words = "";
     Boolean check = false, pic_taken = false;
     Uri ImageUri;
+    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,11 @@ public class OCR extends AppCompatActivity {
         getSupportActionBar().setTitle("Text Recogination OCR");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //ad view hook
+        MobileAds.initialize(this,"ca-app-pub-1494531846382800~5982462648"); //app id
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         Log.d("check", "ocr activity start");
         captureImage = (Button) findViewById(R.id.capture);

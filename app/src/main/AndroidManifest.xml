@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.urpad">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -10,40 +13,75 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/scaning"
+        android:icon="@drawable/app_logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".StartUp"></activity>
 
-        <activity android:name=".AccountSetting"></activity>
-        <activity android:name=".Search" />
-        <activity android:name=".UserProfile" />
-        <activity android:name=".OCR" />
-        <activity android:name=".AddNote" />
-        <activity android:name=".signUpSetupMessage" />
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/appID" />
+
+        <activity
+            android:name=".AccountSetting"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Search"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".UserProfile"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".OCR"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AddNote"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".signUpSetupMessage"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".DisplayNotes"
-            android:parentActivityName=".Home_Dash" />
-        <activity android:name=".Home_Dash">
+            android:parentActivityName=".Home_Dash"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Home_Dash"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".PasswordUpdateMessage"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setNewPassword"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ForgetPassword"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".verifyOTP"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".signUp3"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".signUp2"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".signUp"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".login"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".splashScreen"
+            android:screenOrientation="portrait">
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN" />
 
+                    <category android:name="android.intent.category.LAUNCHER" />
+                </intent-filter>
         </activity>
-        <activity android:name=".PasswordUpdateMessage" />
-        <activity android:name=".setNewPassword" />
-        <activity android:name=".ForgetPassword" />
-        <activity android:name=".verifyOTP" />
-        <activity android:name=".signUp3" />
-        <activity android:name=".signUp2" />
-        <activity android:name=".signUp" />
-        <activity android:name=".login" />
-        <activity android:name=".splashScreen" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="ocr" />

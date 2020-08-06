@@ -24,6 +24,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -47,6 +50,7 @@ public class login extends AppCompatActivity {
     RelativeLayout progressbar;
     CheckBox rememberMe;
     TextInputEditText phoneNo_RM, password_RM;
+    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +76,15 @@ public class login extends AppCompatActivity {
         // check shared preferences for phoneNO and Password
         SessionManager sessionManager = new SessionManager(login.this, SessionManager.SESSION_REMEMBERME);
         if (sessionManager.checkRememberMe()) {
-            HashMap<String, String> rememberMeDetails = sessionManager.getRememberMeDetailFromSession();
-            phoneNo_RM.setText(rememberMeDetails.get(SessionManager.KEY_SESSIONPHONENUMBER));
-            password_RM.setText(rememberMeDetails.get(SessionManager.KEY_SESSIONPASSWORD));
+//            HashMap<String, String> rememberMeDetails = sessionManager.getRememberMeDetailFromSession();
+//            phoneNo_RM.setText(rememberMeDetails.get(SessionManager.KEY_SESSIONPHONENUMBER));
+//            password_RM.setText(rememberMeDetails.get(SessionManager.KEY_SESSIONPASSWORD));
         }
+        //ad view hook
+        MobileAds.initialize(this,"ca-app-pub-1494531846382800~5982462648"); //app id
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         //functions
         signup.setOnClickListener(new View.OnClickListener() {
@@ -133,7 +142,7 @@ public class login extends AppCompatActivity {
 
                 if (rememberMe.isChecked()) {
                     SessionManager sessionManager = new SessionManager(login.this, SessionManager.SESSION_REMEMBERME);
-                    sessionManager.createRememberMeSession(_getUserEnteredPhoneNumber, _password);
+//                    sessionManager.createRememberMeSession(_getUserEnteredPhoneNumber, _password);
                 }
 
 
@@ -163,8 +172,6 @@ public class login extends AppCompatActivity {
                                 //  Toast.makeText(login.this, _fullname + "--" + _email + "--" + _phoneno + "--" + _dateOfBirth, Toast.LENGTH_SHORT).show();
 
                                 //Create Session
-                                SessionManager sessionManager = new SessionManager(login.this, SessionManager.SESSION_USERSESSION);
-                                sessionManager.createLoginSession(_fullname, _username, _email, _phoneno, _password, _dateOfBirth, _gender);
                                 Log.d("check", "intent called");
                                 Intent i = new Intent(login.this, Home_Dash.class);
                                 startActivity(i);

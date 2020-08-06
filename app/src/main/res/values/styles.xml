@@ -18,9 +18,9 @@
     <style name="navigationTheme" >
 
         <!--text & icon color -->
-        <item name="colorPrimary">#59E60C</item>
+        <item name="colorPrimary">@color/black</item>
         <!--bg color when selected -->
-        <item name="colorAccent">@color/black</item>
+        <item name="colorAccent">@color/white</item>
 
     </style>
 

@@ -15,10 +15,12 @@
        >
        <pl.droidsonroids.gif.GifImageView
            android:id="@+id/logoImage"
-           android:layout_width="match_parent"
+           android:layout_width="250dp"
            android:layout_height="100dp"
            android:transitionName="logo_image"
            android:src="@drawable/note_scan"
+           android:layout_margin="20dp"
+           android:layout_gravity="center"
            android:scaleType="fitXY"
            />
        <TextView

@@ -22,6 +22,11 @@ import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,6 +50,9 @@ public class DisplayNotes extends AppCompatActivity implements FirebaseAuth.Auth
     private RecyclerView recyclerView;
     FirestoreRecyclerAdapter notesRecyclerAdapter;
     RelativeLayout progressbar;
+    private AdView mAdView;
+    private InterstitialAd mInterstitialAd;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +69,14 @@ public class DisplayNotes extends AppCompatActivity implements FirebaseAuth.Auth
         getSupportActionBar().setTitle("All Notes");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //ad view hook
+        MobileAds.initialize(this,"ca-app-pub-1494531846382800~5982462648"); //app id
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        // intersitial ad
+        prepareAD();
 
         //RecycleView Setup
         recyclerView = findViewById(R.id.recylerView);
@@ -85,7 +101,17 @@ public class DisplayNotes extends AppCompatActivity implements FirebaseAuth.Auth
             startActivity(i);
             finish();
         }else{
-            gotMain();
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+                mInterstitialAd.setAdListener(new AdListener(){
+                    @Override
+                    public void onAdClosed() {
+                        super.onAdClosed();
+                        gotMain();
+                    }
+                });
+            }else
+                gotMain();
         }
 
         return super.onOptionsItemSelected(item);
@@ -128,13 +154,11 @@ public class DisplayNotes extends AppCompatActivity implements FirebaseAuth.Auth
     private void initRecyclerView() {
         progressbar.setVisibility(View.VISIBLE);
         Log.d("check", "recy Called");
-        SessionManager sessionManager = new SessionManager(DisplayNotes.this, "userLoginSession");
-        HashMap<String, String> userDetails = sessionManager.getUserDetailFromSession();
-        String _phoneNo = userDetails.get(SessionManager.KEY_PHONENUMBER);
-        Log.d("check", "np->" + _phoneNo);
+        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid().toString();
+        Log.d("check", "np->" + userID);
         Query query = FirebaseFirestore.getInstance()
                 .collection("notes")
-                .whereEqualTo("userid", _phoneNo)
+                .whereEqualTo("userid", userID)
                 .orderBy("isCompleted", Query.Direction.ASCENDING)
                 .orderBy("date", Query.Direction.DESCENDING)
                 .orderBy("time", Query.Direction.DESCENDING);
@@ -235,12 +259,31 @@ public class DisplayNotes extends AppCompatActivity implements FirebaseAuth.Auth
 
     }
     public void onBackPressed() {
-        super.onBackPressed();
-        gotMain();
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+            mInterstitialAd.setAdListener(new AdListener(){
+                @Override
+                public void onAdClosed() {
+                    super.onAdClosed();
+                   gotMain();
+                }
+            });
+        } else {
+            gotMain();
+            super.onBackPressed();
+        }
     }
     private void gotMain() {
         Intent i = new Intent(this, Home_Dash.class);
         startActivity(i);
         finish();
+    }
+
+    public  void prepareAD(){
+        // interstitial ad
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-1494531846382800/7826135153");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
     }
 }

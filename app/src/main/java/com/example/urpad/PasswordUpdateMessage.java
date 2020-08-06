@@ -26,8 +26,7 @@ public class PasswordUpdateMessage extends AppCompatActivity {
     }
 
     private void loginActivity() {
-        Toast.makeText(this,"Now Login to Your account",Toast.LENGTH_LONG).show();
-        Intent i = new Intent(this, login.class);
+        Intent i = new Intent(this, Home_Dash.class);
         startActivity(i);
         finish();
     }

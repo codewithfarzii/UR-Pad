@@ -22,7 +22,13 @@ import android.widget.RatingBar;
 
 import com.example.urpad.HomeAdapter.FeaturedAdapter;
 import com.example.urpad.HomeAdapter.FeaturedHelperClass;
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -43,6 +49,8 @@ public class Home_Dash extends AppCompatActivity implements NavigationView.OnNav
     ImageView menuIcon;
     LinearLayout contentView;
     RatingBar rateUs;
+    private AdView mAdView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +58,20 @@ public class Home_Dash extends AppCompatActivity implements NavigationView.OnNav
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_home__dash);
         Log.d("check", "Home start");
-        SessionManager sessionManager = new SessionManager(Home_Dash.this, SessionManager.SESSION_USERSESSION);
-        if (!sessionManager.checkLogin()) {
+        if(FirebaseAuth.getInstance().getCurrentUser()==null){
             startLoginActivity();
         }
         //hooks
         featured_recycler = findViewById(R.id.featured_recycler);
         recent_created_note = findViewById(R.id.recent_created_recycler);
         recent_created_note.setHasFixedSize(true);
+
+        //ad view hook
+        MobileAds.initialize(this,getResources().getString(R.string.appID)); //app id
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
         // recent_created_note.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
@@ -189,13 +203,10 @@ public class Home_Dash extends AppCompatActivity implements NavigationView.OnNav
 
     private void recentNotes() {
         Log.d("check", "recent note call");
-        SessionManager sessionManager = new SessionManager(Home_Dash.this, "userLoginSession");
-        HashMap<String, String> userDetails = sessionManager.getUserDetailFromSession();
-        String _phoneNo = userDetails.get(SessionManager.KEY_PHONENUMBER);
-        Log.d("check", _phoneNo);
+        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid().toString();
         Query query = FirebaseFirestore.getInstance()
                 .collection("notes")
-                .whereEqualTo("userid", _phoneNo)
+                .whereEqualTo("userid", userID)
                 .orderBy("date", Query.Direction.DESCENDING)
                 .orderBy("time", Query.Direction.DESCENDING)
                 .limit(10);
@@ -226,6 +237,10 @@ public class Home_Dash extends AppCompatActivity implements NavigationView.OnNav
     @Override
     protected void onStart() {
         super.onStart();
+
+        if (FirebaseAuth.getInstance().getCurrentUser() != null)
+            Log.d("test", "on start" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+
         Log.d("check", "Home->on start -> start listen");
         madapter.startListening();
     }
@@ -252,16 +267,20 @@ public class Home_Dash extends AppCompatActivity implements NavigationView.OnNav
     }
 
     public void startLoginActivity() {
-        Intent i = new Intent(Home_Dash.this, login.class);
+        Intent i = new Intent(Home_Dash.this, StartUp.class);
         startActivity(i);
         finish();
     }
     public void LogOut() {
-        SessionManager sessionManager=new SessionManager(Home_Dash.this,SessionManager.SESSION_USERSESSION);
-        sessionManager.logoutUserFromSession();
-        Intent i = new Intent(Home_Dash.this, login.class);
-        startActivity(i);
-        finish();
+        AuthUI.getInstance().signOut(this)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            startLoginActivity();
+                        }
+                    }
+                });
     }
 
     @Override

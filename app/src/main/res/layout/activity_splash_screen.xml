@@ -24,7 +24,8 @@
             android:background="@drawable/note_scan"
             app:layout_constraintStart_toStartOf="parent"
             android:transitionName="logo_image"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+           android:layout_margin="20dp"/>
 
         <TextView
             android:id="@+id/logo"

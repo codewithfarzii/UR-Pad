@@ -8,35 +8,23 @@
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/gifnote"
         android:layout_width="match_parent"
-        android:layout_height="110dp"
+        android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:background="@drawable/book"
         android:scaleType="fitXY" />
     <TextView
         android:id="@+id/app_name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:fontFamily="@font/aladin"
         android:gravity="center"
         android:text="UR Pad"
         android:textAlignment="center"
+        android:layout_centerInParent="true"
         android:textColor="@color/logo_color"
         android:textSize="40sp"
         android:textStyle="bold"
+        android:layout_marginTop="-50dp"
+        android:background="#BE807676"
         android:layout_below="@id/gifnote"/>
-    <TextView
-        android:id="@+id/menu_slogan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:fontFamily="@font/antic"
-        android:gravity="center"
-        android:text="WHERE YOU SAVE NOTES"
-        android:textAlignment="center"
-        android:layout_centerInParent="true"
-        android:textColor="#3651E3"
-        android:textSize="20sp"
-        android:layout_below="@id/app_name"
-        android:textStyle="bold"/>
-
-</RelativeLayout>
+   </RelativeLayout>

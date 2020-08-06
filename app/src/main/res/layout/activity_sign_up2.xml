@@ -126,16 +126,16 @@
                 android:layout_marginTop="15dp"
                 android:background="@drawable/custom_button"
                 android:textStyle="bold"
-                android:text="Next"
+                android:text="Done"
                 android:textColor="#fff"
                 android:textSize="30sp"
                 android:transitionName="go_tran" />
 
             <Button
-                android:id="@+id/loginbtn"
+                android:id="@+id/back"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Already have an account? Login! "
+                android:text="Cancel"
                 android:background="#00000000"
                 android:elevation="10dp"
                 android:layout_marginTop="10dp"
@@ -147,4 +147,20 @@
 
 
 </ScrollView>
+    <RelativeLayout
+        android:id="@+id/login_progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/white_circle"
+        android:elevation="10dp"
+        android:padding="20dp"
+        android:visibility="gone"
+        android:layout_marginTop="-15dp"
+        android:layout_marginBottom="15dp">
+
+        <ProgressBar
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+    </RelativeLayout>
 </LinearLayout>

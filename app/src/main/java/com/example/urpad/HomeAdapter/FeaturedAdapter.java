@@ -63,17 +63,17 @@ public class FeaturedAdapter extends RecyclerView.Adapter<FeaturedAdapter.Featur
                 @Override
                 public void onClick(View v) {
                     if(getAdapterPosition()==0) {
-                        Toast.makeText(v.getContext(), "note", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(v.getContext(), "note", Toast.LENGTH_SHORT).show();
                         Intent i=new Intent(v.getContext(),DisplayNotes.class);
                         v.getContext().startActivity(i);
                     }
                     if(getAdapterPosition()==1) {
-                        Toast.makeText(v.getContext(), "ocr", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(v.getContext(), "", Toast.LENGTH_SHORT).show();
                         Intent i=new Intent(v.getContext(), OCR.class);
                         v.getContext().startActivity(i);
                     }
                     if(getAdapterPosition()==2)
-                        Toast.makeText(v.getContext(),"about",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(v.getContext(),"Coming Soon",Toast.LENGTH_SHORT).show();
 
                   //  i.putExtra("ID",String.valueOf(mExample_items.get(getAdapterPosition()).getID()));
                   //  v.getContext().startActivity(i);
